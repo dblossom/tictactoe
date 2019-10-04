@@ -31,49 +31,103 @@ function getCursorPosition(canvas, event) {
 }
 
 function drawBoard(){
+  // get the canvas
   var canvas = document.getElementById('display');
+  // create canvas rendering context
   var ctx = canvas.getContext('2d');
+  // get canvas dementions
   var width = canvas.width;
   var height = canvas.height;
+
+  // start to draw out the lines
   ctx.beginPath();
+  // leftmost vertical line
   ctx.moveTo(width/3,0);
   ctx.lineTo(width/3,height);
-  ctx.stroke();
+  // rightmost vertical line
   ctx.moveTo((width/3)*2,0);
   ctx.lineTo((width/3)*2,height);
-  ctx.stroke();
+  // top horizontal line
   ctx.moveTo(0,height/3);
   ctx.lineTo(width,height/3);
-  ctx.stroke();
+  // bottom horizontal line
   ctx.moveTo(0,(height/3)*2);
   ctx.lineTo(width,(height/3)*2);
+  // draw
   ctx.stroke();
 }
 
 function draw(x,y){
+  // find the row
   var row = findRow(y);
+  // find the column
   var col = findCol(x);
+  // are we drawing an X or O
+  var x_o = "";
   if(xTurn){
-    drawX(col,row);
+    x_o = "X";
+  }
+  if(oTurn){
+    x_o = "O";
   }
 
-  console.log("In draw() x: " + x + " y: " + y);
-}
-
-function drawX(col,row){
+  // get the canvas ...
   var canvas = document.getElementById('display');
+  // get the canvas rendering
   var ctx = canvas.getContext('2d');
+  // start
   ctx.beginPath();
+  // font stuff
+  ctx.font = "70px Arial";
 
-  if(col===1 && row===1){
-    ctx.moveTo(35,35);
-    ctx.lineTo(125,125);
-    ctx.stroke();
-    ctx.moveTo(35,125);
-    ctx.lineTo(125,35);
-    ctx.stroke();
-    return;
+  // this is just going to get fucking ugly with 9 different if's to determine
+  // where the fuck we are ... after we are also going to need to store
+  // this information for comparing the winner ... UGH!
+  if(col===1){
+    if(row===1){
+      ctx.fillText(x_o,56,110);
+      return;
+    }
+    if(row===2){
+      ctx.fillText(x_o,56,275);
+      return;
+    }
+    if(row===3){
+      ctx.fillText(x_o,56,430);
+      return;
+    }
+
   }
+
+  if(col===2){
+    if(row===1){
+      ctx.fillText(x_o,225,110);
+      return;
+    }
+    if(row===2){
+      ctx.fillText(x_o,225,275);
+      return;
+    }
+    if(row===3){
+      ctx.fillText(x_o,225,430);
+      return;
+    }
+  }
+
+  if(col===3){
+    if(row===1){
+      ctx.fillText(x_o,385,110);
+      return;
+    }
+    if(row===2){
+      ctx.fillText(x_o,385,275);
+      return;
+    }
+    if(row===3){
+      ctx.fillText(x_o,385,430);
+    }
+  }
+  console.log("In draw() x: " + x + " y: " + y);
 }
 
 function findRow(y){
