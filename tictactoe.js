@@ -3,8 +3,7 @@
 // IE: xTurn is true then X false O.
 var xTurn = false;
 var oTurn = false;
-var X = 1;
-var O = 0;
+var winner = "";
 var spotTaken = [[-1,-1,-1],[-1,-1,-1],[-1,-1-1]];
 var gameActive = false;
 
@@ -18,10 +17,13 @@ function load(){
   const canvas = document.querySelector('canvas');
   canvas.addEventListener('mousedown', function(e) {
     var point = getCursorPosition(canvas, e);
-    draw(point[0],point[1]);
+    if(gameActive){
+      draw(point[0],point[1]);
+    }
     if(win()){
       // call end game routine for now ...
-      console.log("win is true ...");
+      gameActive = false;
+      console.log("The winner is " + winner);
     }
   });
 
@@ -58,7 +60,6 @@ function drawBoard(){
   // get canvas dementions
   var width = canvas.width;
   var height = canvas.height;
-
   // start to draw out the lines
   ctx.beginPath();
   // leftmost vertical line
@@ -202,29 +203,73 @@ function win(){
     return true;
   }
   if(checkCols()){
-    //return true;
+    return true;
   }
   if(checkDiags()){
-    //return true;
+    return true;
   }
   else{
     return false;
   }
 }
+
 function checkRows(){
   var result = false;
   for(i = 0; i < spotTaken.length; i++){
-    result = ((spotTaken[i][0] === spotTaken[i][1]) &&
-              (spotTaken[i][0] === spotTaken[i][2]));
+    if(spotTaken[i][0] == -1 || spotTaken[i][1] == -1 || spotTaken[i][2] == -1){
+      result = false;
+    }else{
+      result = ((spotTaken[i][0] === spotTaken[i][1]) &&
+                (spotTaken[i][0] === spotTaken[i][2]));
+    }
     if(result){
+      winner = spotTaken[i][0];
       break;
     }
   }
   return result;
 }
+
 function checkCols(){
-
+  var result = false;
+  for(i = 0; i < spotTaken.length; i++){
+    if(spotTaken[0][i] == -1 || spotTaken[1][i] == -1 || spotTaken[2][i] == -1){
+      result = false;
+    }else{
+      result = ((spotTaken[0][i] === spotTaken[1][i]) &&
+                (spotTaken[0][i] === spotTaken[2][i]));
+    }
+    if(result){
+      winner = spotTaken[0][i];
+      break;
+    }
+  }
+  return result;
 }
-function checkDiags(){
 
+function checkDiags(){
+  var result = false;
+  // Top left / bottom right diag test
+  if(spotTaken[0][0] == -1 || spotTaken[1][1] == -1 || spotTaken[2][2] == -1){
+     result = false;
+  }else{
+     result = ((spotTaken[0][0] === spotTaken[1][1]) &&
+               (spotTaken[0][0] === spotTaken[2][2]));
+  }
+  if(result){
+    winner = spotTaken[0][0];
+    return result;
+  }
+
+  // Top right / bottom left diag test
+  if(spotTaken[0][2] == -1 || spotTaken[1][1] == -1 || spotTaken[2][0] == -1){
+     result = false;
+  }else{
+     result = ((spotTaken[0][2] === spotTaken[1][1]) &&
+               (spotTaken[0][2] === spotTaken[2][0]));
+  }
+  if(result){
+    winner = spotTaken[0][2];
+  }
+  return result;
 }
