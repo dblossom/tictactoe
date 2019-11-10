@@ -8,31 +8,33 @@ var spotTaken = [[-1,-1,-1],[-1,-1,-1],[-1,-1-1]];
 var gameActive = false;
 
 function load(){
-  this.canvas = document.getElementById('display');
-  this.context = this.canvas.getContext('2d');
-  this.context.font = "bold 12px Arial";
-  this.context.clearRect(0, 0, 500, 500);
-
-  // Activate the listener
-  const canvas = document.querySelector('canvas');
-  canvas.addEventListener('mousedown', function(e) {
-    var point = getCursorPosition(canvas, e);
-    if(gameActive){
-      draw(point[0],point[1]);
-    }
-    if(win()){
-      // call end game routine for now ...
-      gameActive = false;
-      console.log("The winner is " + winner);
-    }
-  });
-
+  clearBoard();
   drawBoard();
-  resetSpotTaken();
+}
 
-  // for now X always goes first
-  xTurn = true;
-  gameActive = true;
+function playButton(){
+  if(gameActive == false){
+    // Activate the listener
+    const canvas = document.querySelector('canvas');
+    canvas.addEventListener('mousedown', function(e) {
+      var point = getCursorPosition(canvas, e);
+      if(gameActive){
+        draw(point[0],point[1]);
+      }
+      if(win()){
+        // call end game routine for now ...
+        gameActive = false;
+        console.log("The winner is " + winner);
+      }
+    });
+    resetSpotTaken();
+    clearBoard();
+    drawBoard();
+    // for now X always goes first
+    xTurn = true;
+    oTurn = false;
+    gameActive = true;
+  }
 }
 
 function getCursorPosition(canvas, event) {
@@ -50,6 +52,13 @@ function resetSpotTaken(){
       spotTaken[i][j] = -1;
     }
   }
+}
+
+function clearBoard(){
+  this.canvas = document.getElementById('display');
+  this.context = this.canvas.getContext('2d');
+  this.context.font = "bold 12px Arial";
+  this.context.clearRect(0, 0, 500, 500);
 }
 
 function drawBoard(){
