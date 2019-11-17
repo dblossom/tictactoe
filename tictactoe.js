@@ -10,23 +10,11 @@ var gameActive = false;
 function load(){
   clearBoard();
   drawBoard();
+  activateListener();
 }
 
 function playButton(){
   if(gameActive == false){
-    // Activate the listener
-    const canvas = document.querySelector('canvas');
-    canvas.addEventListener('mousedown', function(e) {
-      var point = getCursorPosition(canvas, e);
-      if(gameActive){
-        draw(point[0],point[1]);
-      }
-      if(win()){
-        // call end game routine for now ...
-        gameActive = false;
-        console.log("The winner is " + winner);
-      }
-    });
     resetSpotTaken();
     clearBoard();
     drawBoard();
@@ -35,6 +23,22 @@ function playButton(){
     oTurn = false;
     gameActive = true;
   }
+}
+
+function activateListener(){
+  // Activate the listener
+  const canvas = document.querySelector('canvas');
+  canvas.addEventListener('mousedown', function(e) {
+    var point = getCursorPosition(canvas, e);
+    if(gameActive){
+      draw(point[0],point[1]);
+    }
+    if(win()){
+      // call end game routine for now ...
+      gameActive = false;
+      console.log("The winner is " + winner);
+    }
+  });
 }
 
 function getCursorPosition(canvas, event) {
