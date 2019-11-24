@@ -5,7 +5,28 @@ var xTurn = false;
 var oTurn = false;
 var winner = "";
 var spotTaken = [[-1,-1,-1],[-1,-1,-1],[-1,-1-1]];
+var spotsRemaining = 9;
 var gameActive = false;
+//var playButton = document.getElementById("play"); //disabled = true;
+var _listener = function(){
+    var point = getCursorPosition(canvas, event);
+    if(gameActive){
+      draw(point[0],point[1]);
+    }
+    if(gameActive && endGame()){
+      // endGame() already called to do test.
+      // endGame() calls win() to determine winner
+      // deactivate game
+      gameActive = false;
+      // deactivateListener however, suspect it's not working
+      // Hence testing for gameActive first, because if it
+      // returns false it will not test endGame() and not print
+      // who the winner is again... work around for the event listener
+      // not working ...
+      deactivateListener();
+      enablePlayButton();
+    }
+}
 
 function load(){
   clearBoard();
@@ -22,23 +43,32 @@ function playButton(){
     xTurn = true;
     oTurn = false;
     gameActive = true;
+    disablePlayButton();
+    //activateListener();
   }
 }
 
+function enablePlayButton(){
+  document.getElementById("play").disabled = false;
+}
+
+function disablePlayButton(){
+  document.getElementById("play").disabled = true;
+}
+
 function activateListener(){
-  // Activate the listener
   const canvas = document.querySelector('canvas');
-  canvas.addEventListener('mousedown', function(e) {
-    var point = getCursorPosition(canvas, e);
-    if(gameActive){
-      draw(point[0],point[1]);
-    }
-    if(win()){
-      // call end game routine for now ...
-      gameActive = false;
-      console.log("The winner is " + winner);
-    }
-  });
+  canvas.addEventListener('mousedown', _listener);
+}
+
+/*
+ * This doesn't seem to work correclty I suspect
+ * It's because the events do not belong to
+ * eachother, but why -- the canvas? No idea.
+ */
+function deactivateListener(){
+  const canvas = document.querySelector('canvas');
+  canvas.removeEventListener('mousedown', _listener, true);
 }
 
 function getCursorPosition(canvas, event) {
@@ -56,6 +86,7 @@ function resetSpotTaken(){
       spotTaken[i][j] = -1;
     }
   }
+  spotsRemaining = 9;
 }
 
 function clearBoard(){
@@ -109,6 +140,7 @@ function draw(x,y){
   }
   if(spotAvailable(row,col)){
     spotTaken[row-1][col-1] = x_o;
+    spotsRemaining -= 1;
   }else{
     // throw an error saying illegal turn.
     return;
@@ -202,6 +234,21 @@ function findCol(x){
 
 function spotAvailable(row,col){
   return (spotTaken[row-1][col-1] === -1);
+}
+
+function endGame(){
+  if(win()){
+    console.log("The winner is: " + winner);
+    gameActive = false;
+    return true;
+  }
+  if(spotsRemaining < 1){
+    winner = "";
+    console.log("IT'S A TIE!");
+    gameActive = false;
+    return true;
+  }
+  return false;
 }
 
 function win(){
