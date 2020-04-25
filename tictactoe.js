@@ -43,6 +43,8 @@ function playButton(){
     xTurn = true;
     oTurn = false;
     gameActive = true;
+    winner = "";
+    printWinner(winner);
     disablePlayButton();
     //activateListener();
   }
@@ -239,16 +241,31 @@ function spotAvailable(row,col){
 function endGame(){
   if(win()){
     console.log("The winner is: " + winner);
+    printWinner(winner);
     gameActive = false;
     return true;
   }
   if(spotsRemaining < 1){
-    winner = "";
+    winner = "TIE";
     console.log("IT'S A TIE!");
+    printWinner(winner);
     gameActive = false;
     return true;
   }
   return false;
+}
+
+function printWinner(winner){
+
+  var winneris = "";
+  if(winner === "TIE"){
+    winneris = "IT'S A TIE, TRY AGAIN!"
+  }else if(winner === ""){
+    winneris = "";
+  }else{
+    winneris = winner + " IS THE WINNER!";
+  }
+  document.getElementById("winner").innerHTML = winneris;
 }
 
 function win(){
